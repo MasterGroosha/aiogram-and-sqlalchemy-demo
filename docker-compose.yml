@@ -1,13 +1,25 @@
 version: '3.8'
 services:
+    bot:
+        image: registry.gitlab.com/groosha/aiogram-and-sqlalchemy-demo:latest\
+        container_name: aiogram-and-sqlalchemy-demo
+        restart: always
+        environment:
+            - BOT_TOKEN
+            - DB_HOST
+            - DB_USER
+            - DB_PASS
+            - DB_NAME
+        depends_on:
+            - db
     db:
         container_name: pg_container
         image: postgres:12-alpine
         restart: always
         environment:
-            POSTGRES_USER: demo
-            POSTGRES_PASSWORD: 4hunger0shirt1what4
-            POSTGRES_DB: demo_db
+            POSTGRES_USER: ${DB_USER}
+            POSTGRES_PASSWORD: ${DB_PASS}
+            POSTGRES_DB: ${DB_NAME}
         ports:
             # Available on host for easier debug
             - "5432:5432"
@@ -38,4 +50,4 @@ volumes:
         driver_opts:
             type: 'none'
             o: 'bind'
-            device: './pgadmin_data'
+            device: './postgres_data'
