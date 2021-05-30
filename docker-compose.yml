@@ -1,0 +1,41 @@
+version: '3.8'
+services:
+    db:
+        container_name: pg_container
+        image: postgres:12-alpine
+        restart: always
+        environment:
+            POSTGRES_USER: demo
+            POSTGRES_PASSWORD: 4hunger0shirt1what4
+            POSTGRES_DB: demo_db
+        ports:
+            # Available on host for easier debug
+            - "5432:5432"
+        volumes: 
+            - "postgres_data:/var/lib/postgresql/data"
+    # This is optional, not necessary
+    pgadmin:
+        container_name: pgadmin4_container
+        image: dpage/pgadmin4
+        restart: always
+        environment:
+            PGADMIN_DEFAULT_EMAIL: admin@admin.com
+            PGADMIN_DEFAULT_PASSWORD: 4RIDDLE7MISCHANCE4opaqueness1
+        ports:
+            - "5050:80"
+        volumes: 
+            - "pgadmin_data:/var/lib/pgadmin"
+
+volumes:
+    postgres_data:
+        driver: local
+        driver_opts:
+            type: 'none'
+            o: 'bind'
+            device: './postgres_data'
+    pgadmin_data:
+        driver: local
+        driver_opts:
+            type: 'none'
+            o: 'bind'
+            device: './pgadmin_data'
