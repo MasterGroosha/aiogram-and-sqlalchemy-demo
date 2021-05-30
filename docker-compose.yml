@@ -20,10 +20,7 @@ services:
             POSTGRES_USER: ${DB_USER}
             POSTGRES_PASSWORD: ${DB_PASS}
             POSTGRES_DB: ${DB_NAME}
-        ports:
-            # Available on host for easier debug
-            - "5432:5432"
-        volumes: 
+        volumes:
             - "postgres_data:/var/lib/postgresql/data"
     # This is optional, not necessary
     pgadmin:
@@ -31,6 +28,7 @@ services:
         image: dpage/pgadmin4
         restart: always
         environment:
+            # These variables could be also moved to .env file, but I don't care
             PGADMIN_DEFAULT_EMAIL: admin@admin.com
             PGADMIN_DEFAULT_PASSWORD: 4RIDDLE7MISCHANCE4opaqueness1
         ports:
