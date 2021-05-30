@@ -1,0 +1,6 @@
+# rename this file to .env (with the leading dot) and place it next to docker-compose.yml
+BOT_TOKEN=123456789:AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQq
+DB_HOST=db
+DB_NAME=demo
+DB_USER=
+DB_PASS=Y0ur$upeRS3cReTpA$$w0rd
