@@ -48,4 +48,4 @@ volumes:
         driver_opts:
             type: 'none'
             o: 'bind'
-            device: './postgres_data'
+            device: './pgadmin_data'
