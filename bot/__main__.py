@@ -2,6 +2,7 @@ import asyncio
 import logging
 
 from aiogram import Bot, Dispatcher
+from aiogram.types import BotCommand
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 
@@ -9,6 +10,14 @@ from bot.config_loader import Config, load_config
 from bot.db.base import Base
 from bot.handlers.commands import register_commands
 from bot.handlers.callbacks import register_callbacks
+
+
+async def set_bot_commands(bot: Bot):
+    commands = [
+        BotCommand(command="play", description="Start a new game (your current score will reset)"),
+        BotCommand(command="top", description="View top-5 players scoreboard")
+    ]
+    await bot.set_my_commands(commands)
 
 
 async def main():
@@ -36,6 +45,8 @@ async def main():
 
     register_commands(dp)
     register_callbacks(dp)
+
+    await set_bot_commands(bot)
 
     try:
         await dp.start_polling()
