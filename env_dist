@@ -2,5 +2,5 @@
 BOT_TOKEN=123456789:AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQq
 DB_HOST=db
 DB_NAME=demo
-DB_USER=
+DB_USER=someuser
 DB_PASS=Y0ur$upeRS3cReTpA$$w0rd

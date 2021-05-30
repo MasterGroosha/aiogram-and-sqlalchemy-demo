@@ -1,7 +1,7 @@
 version: '3.8'
 services:
     bot:
-        image: registry.gitlab.com/groosha/aiogram-and-sqlalchemy-demo:latest\
+        image: registry.gitlab.com/groosha/aiogram-and-sqlalchemy-demo:latest
         container_name: aiogram-and-sqlalchemy-demo
         restart: always
         environment:
@@ -13,7 +13,7 @@ services:
         depends_on:
             - db
     db:
-        container_name: pg_container
+        container_name: aiogram-and-sqlalchemy-demo
         image: postgres:12-alpine
         restart: always
         environment:
@@ -24,7 +24,7 @@ services:
             - "postgres_data:/var/lib/postgresql/data"
     # This is optional, not necessary
     pgadmin:
-        container_name: pgadmin4_container
+        container_name: aiogram-and-sqlalchemy-demo-pgadmin
         image: dpage/pgadmin4
         restart: always
         environment:
