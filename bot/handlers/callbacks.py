@@ -3,14 +3,14 @@ from contextlib import suppress
 from aiogram import types, Dispatcher
 from aiogram.utils.exceptions import MessageNotModified
 from sqlalchemy import select
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.common import cb_balls
 from bot.keyboards import generate_balls
 from bot.db.models import PlayerScore
 
 
-async def get_player(db_session: sessionmaker, user_id: int) -> PlayerScore:
+async def get_player(db_session: AsyncSession, user_id: int) -> PlayerScore:
     """
     Request PlayerScore object from database
 
@@ -19,9 +19,8 @@ async def get_player(db_session: sessionmaker, user_id: int) -> PlayerScore:
     :return: a PlayerScore object for specific user ID
     """
     sql = select(PlayerScore).where(PlayerScore.user_id == user_id)
-    async with db_session() as session:
-        player_request = await session.execute(sql)
-        player: PlayerScore = player_request.scalar()
+    request = await db_session.execute(sql)
+    player: PlayerScore = request.scalar()
     return player
 
 
@@ -32,11 +31,10 @@ async def miss(call: types.CallbackQuery):
     :param call: CallbackQuery from Telegram
     """
     db_session = call.bot.get("db")
-    player: PlayerScore = await get_player(db_session, call.from_user.id)
-    player.score = 0
 
     async with db_session() as session:
-        session.add(player)
+        player: PlayerScore = await get_player(session, call.from_user.id)
+        player.score = 0
         await session.commit()
 
     with suppress(MessageNotModified):
@@ -51,11 +49,10 @@ async def hit(call: types.CallbackQuery):
     :param call:CallbackQuery from Telegram
     """
     db_session = call.bot.get("db")
-    player: PlayerScore = await get_player(db_session, call.from_user.id)
-    player.score += 1
 
     async with db_session() as session:
-        session.add(player)
+        player: PlayerScore = await get_player(session, call.from_user.id)
+        player.score += 1
         await session.commit()
 
     # Since we have "expire_on_commit=False", we can use player instance here

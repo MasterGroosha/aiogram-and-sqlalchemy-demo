@@ -16,13 +16,12 @@ async def cmd_play(message: types.Message):
     sql = select(PlayerScore).where(PlayerScore.user_id == message.from_user.id)
 
     async with db_session() as session:
-        player_request = await session.execute(sql)
-        player = player_request.scalar()
+        request = await session.execute(sql)
+        player = request.scalar()
         if not player:
-            player = PlayerScore()
-            player.user_id = message.from_user.id
+            player = PlayerScore(user_id=message.from_user.id)
+            session.add(player)
         player.score = 0
-        session.add(player)
         await session.commit()
 
     await message.answer("Your score: 0", reply_markup=generate_balls())
@@ -40,7 +39,6 @@ async def cmd_top(message: types.Message):
     score_entries_text = "\n".join(score_entries)\
         .replace(f"{message.from_user.id}", f"{message.from_user.id} (it's you!)")
     await message.answer(text_template.format(scores=score_entries_text), parse_mode="HTML")
-
 
 
 def register_commands(dp: Dispatcher):
