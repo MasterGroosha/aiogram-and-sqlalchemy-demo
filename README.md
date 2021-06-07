@@ -8,7 +8,7 @@ Used tech:
 * asyncpg as database driver for SQLAlchemy
 * Docker with docker-compose for deployment
 
-Don't forget to create "postgres_data" (required) and "postgres_data" (if using PG Admin) directories 
+Don't forget to create "postgres_data" (required) and "pgadmin_data" (if using PG Admin) directories 
 before you run `docker-compose up -d`
 
 Also copy `env_dist` file to `.env` and fill it with your data
