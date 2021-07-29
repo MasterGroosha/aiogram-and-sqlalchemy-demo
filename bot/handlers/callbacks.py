@@ -37,6 +37,7 @@ async def hit(call: types.CallbackQuery):
 
     async with db_session() as session:
         player: PlayerScore = await session.get(PlayerScore, call.from_user.id)
+        # Note: we're incrementing client-side, not server-side
         player.score += 1
         await session.commit()
 
