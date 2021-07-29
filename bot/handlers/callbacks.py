@@ -10,20 +10,6 @@ from bot.keyboards import generate_balls
 from bot.db.models import PlayerScore
 
 
-async def get_player(db_session: AsyncSession, user_id: int) -> PlayerScore:
-    """
-    Request PlayerScore object from database
-
-    :param db_session: SQLAlchemy DB Session
-    :param user_id: User ID in Telegram
-    :return: a PlayerScore object for specific user ID
-    """
-    sql = select(PlayerScore).where(PlayerScore.user_id == user_id)
-    request = await db_session.execute(sql)
-    player: PlayerScore = request.scalar()
-    return player
-
-
 async def miss(call: types.CallbackQuery):
     """
     Invoked on red ball tap
@@ -33,8 +19,7 @@ async def miss(call: types.CallbackQuery):
     db_session = call.bot.get("db")
 
     async with db_session() as session:
-        player: PlayerScore = await get_player(session, call.from_user.id)
-        player.score = 0
+        await session.merge(PlayerScore(user_id=call.from_user.id, score=0))
         await session.commit()
 
     with suppress(MessageNotModified):
@@ -51,7 +36,8 @@ async def hit(call: types.CallbackQuery):
     db_session = call.bot.get("db")
 
     async with db_session() as session:
-        player: PlayerScore = await get_player(session, call.from_user.id)
+        player: PlayerScore = await session.get(PlayerScore, call.from_user.id)
+        # Note: we're incrementing client-side, not server-side
         player.score += 1
         await session.commit()
 
