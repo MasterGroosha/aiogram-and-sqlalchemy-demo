@@ -13,15 +13,9 @@ async def cmd_start(message: types.Message):
 
 async def cmd_play(message: types.Message):
     db_session = message.bot.get("db")
-    sql = select(PlayerScore).where(PlayerScore.user_id == message.from_user.id)
 
     async with db_session() as session:
-        request = await session.execute(sql)
-        player = request.scalar()
-        if not player:
-            player = PlayerScore(user_id=message.from_user.id)
-            session.add(player)
-        player.score = 0
+        await session.merge(PlayerScore(user_id=message.from_user.id, score=0))
         await session.commit()
 
     await message.answer("Your score: 0", reply_markup=generate_balls())

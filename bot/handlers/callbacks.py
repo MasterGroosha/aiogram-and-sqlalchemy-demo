@@ -33,8 +33,7 @@ async def miss(call: types.CallbackQuery):
     db_session = call.bot.get("db")
 
     async with db_session() as session:
-        player: PlayerScore = await get_player(session, call.from_user.id)
-        player.score = 0
+        await session.merge(PlayerScore(user_id=call.from_user.id, score=0))
         await session.commit()
 
     with suppress(MessageNotModified):
