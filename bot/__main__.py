@@ -36,11 +36,11 @@ async def main():
 
     # expire_on_commit=False will prevent attributes from being expired
     # after commit.
-    async_session = sessionmaker(
+    async_sessionmaker = sessionmaker(
         engine, expire_on_commit=False, class_=AsyncSession
     )
     bot = Bot(config.bot.token, parse_mode="HTML")
-    bot["db"] = async_session
+    bot["db"] = async_sessionmaker
     dp = Dispatcher(bot)
 
     register_commands(dp)
