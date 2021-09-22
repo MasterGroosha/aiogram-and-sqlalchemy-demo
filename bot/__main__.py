@@ -10,6 +10,7 @@ from bot.config_loader import Config, load_config
 from bot.db.base import Base
 from bot.handlers.commands import register_commands
 from bot.handlers.callbacks import register_callbacks
+from bot.updatesworker import get_handled_updates_list
 
 
 async def set_bot_commands(bot: Bot):
@@ -49,7 +50,7 @@ async def main():
     await set_bot_commands(bot)
 
     try:
-        await dp.start_polling()
+        await dp.start_polling(allowed_updates=get_handled_updates_list(dp))
     finally:
         await dp.storage.close()
         await dp.storage.wait_closed()
