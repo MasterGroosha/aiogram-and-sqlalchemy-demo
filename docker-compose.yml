@@ -1,8 +1,8 @@
 version: '3.8'
 services:
     bot:
+        container_name: aiogram-and-sqlalchemy-demo-bot
         image: registry.gitlab.com/groosha/aiogram-and-sqlalchemy-demo:latest
-        container_name: aiogram-and-sqlalchemy-demo
         restart: always
         environment:
             - BOT_TOKEN
@@ -13,7 +13,7 @@ services:
         depends_on:
             - db
     db:
-        container_name: aiogram-and-sqlalchemy-demo
+        container_name: aiogram-and-sqlalchemy-demo-db
         image: postgres:12-alpine
         restart: always
         environment:
