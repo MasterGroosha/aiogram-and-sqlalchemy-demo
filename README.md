@@ -1,5 +1,10 @@
 # aiogram-and-sqlalchemy-demo
-A simple demo of using aiogram + async sqlalchemy 1.4+
+<a href="https://hub.docker.com/r/groosha/aiogram-and-sqlalchemy-demo"><img src="https://img.shields.io/badge/Docker%20Hub-aiogram--and--sqlalchemy--demo-blue"></a>   
+
+A simple demo of using aiogram + async sqlalchemy 1.4+, made as a pop-it game where you need to click 
+green circles and avoid red ones.
+
+![screenshot](images/screenshot.png)
 
 Used tech:
 * [aiogram](https://github.com/aiogram/aiogram)
