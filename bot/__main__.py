@@ -3,6 +3,7 @@ import logging
 
 from aiogram import Bot, Dispatcher
 from aiogram.types import BotCommand
+from aiogram.types.bot_command_scope import BotCommandScopeDefault
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 
@@ -18,7 +19,7 @@ async def set_bot_commands(bot: Bot):
         BotCommand(command="play", description="Start a new game (your current score will reset)"),
         BotCommand(command="top", description="View top-5 players scoreboard")
     ]
-    await bot.set_my_commands(commands)
+    await bot.set_my_commands(commands, scope=BotCommandScopeDefault())
 
 
 async def main():
