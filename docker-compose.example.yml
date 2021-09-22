@@ -1,0 +1,37 @@
+version: '3.8'
+services:
+    bot:
+        image: groosha/aiogram-and-sqlalchemy-demo:latest
+        restart: always
+        stop_signal: SIGINT
+        environment:
+            - BOT_TOKEN
+            - DB_HOST
+            - DB_USER
+            - DB_PASS
+            - DB_NAME
+        depends_on:
+            - db
+    db:
+        image: postgres:12-alpine
+        restart: always
+        environment:
+            POSTGRES_USER: ${DB_USER}
+            POSTGRES_PASSWORD: ${DB_PASS}
+            POSTGRES_DB: ${DB_NAME}
+        volumes:
+            - "/path/to/your/postgres/directory:/var/lib/postgresql/data"
+    # This is optional, not necessary
+    pgadmin:
+        image: dpage/pgadmin4
+        restart: always
+        environment:
+            PGADMIN_DEFAULT_EMAIL: ${PGADMIN_USER}
+            PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+        ports:
+            - "5050:80"
+        volumes:
+            # Don't forget to set owner:group for this dir as 5050:5050
+            # (sudo chown -R 5050:5050 <this path>)
+            - "/path/to/your/pgadmin/directory:/var/lib/pgadmin"
+

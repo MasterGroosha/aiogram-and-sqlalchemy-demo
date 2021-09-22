@@ -4,3 +4,5 @@ DB_HOST=db
 DB_NAME=demo
 DB_USER=someuser
 DB_PASS=Y0ur$upeRS3cReTpA$$w0rd
+PGADMIN_USER=admin@admin.com
+PGADMIN_PASSWORD=4RIDDLE7MISCHANCE4opaqueness1

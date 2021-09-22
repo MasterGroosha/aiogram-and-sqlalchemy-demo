@@ -1,2 +1,4 @@
 venv/
 .idea/
+/docker-compose.yml
+/.env
