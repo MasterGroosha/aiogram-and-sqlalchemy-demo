@@ -22,15 +22,11 @@ stages:
 # Собственно, job. Их может быть много.
 # Я пытался разнести сборку и push на разные этапы, но пока не получилось, Runner не видит...
 # ...собранный образ из предыдущего этапа. Поэтому так
-build-and-push:
+build:
   stage: build
-  only:
-    refs:
-      - master
-  except:
-    changes:
-      - "README.md"
-      - "LICENSE"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: on_success
   # Команды job-а. Переменная $CI_PROJECT_NAME встроенная
   # Полный список см. https://docs.gitlab.com/ce/ci/variables/#list-all-environment-variables
   script:
