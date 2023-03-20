@@ -1,3 +1,6 @@
-from aiogram.utils.callback_data import CallbackData
+from aiogram.filters.callback_data import CallbackData
 
-cb_balls = CallbackData("ball", "color")
+
+class BallsCallbackFactory(CallbackData, prefix="ball"):
+    color: str
+

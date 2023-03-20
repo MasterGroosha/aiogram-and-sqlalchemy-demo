@@ -1,8 +1,5 @@
 # rename this file to .env (with the leading dot) and place it next to docker-compose.yml
 BOT_TOKEN=123456789:AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQq
-DB_HOST=db
-DB_NAME=demo
-DB_USER=someuser
-DB_PASS=Y0ur$upeRS3cReTpA$$w0rd
+DB_URL=postgresql+psycopg://user:password@server/db
 PGADMIN_USER=admin@admin.com
-PGADMIN_PASSWORD=4RIDDLE7MISCHANCE4opaqueness1
+PGADMIN_PASSWORD=password
