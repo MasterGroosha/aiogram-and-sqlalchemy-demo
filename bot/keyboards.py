@@ -1,19 +1,24 @@
 from random import randint
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from bot.common import cb_balls
+
+from aiogram.types import InlineKeyboardMarkup
+from aiogram.utils.keyboard import InlineKeyboardBuilder
+
+from bot.common import BallsCallbackFactory
 
 
 def generate_balls() -> InlineKeyboardMarkup:
+    """
+    Generates a new 3x3 play field with 8 red balls and 1 green ball
+    :return: Inline keyboard
+    """
     balls_mask = [False] * 9
     balls_mask[randint(0, 8)] = True
     balls = ["🔴", "🟢"]
     data = ["red", "green"]
-    kb = InlineKeyboardMarkup(row_width=3)
-    buttons = [
-        InlineKeyboardButton(
+    builder = InlineKeyboardBuilder()
+    for item in balls_mask:
+        builder.button(
             text=balls[item],
-            callback_data=cb_balls.new(color=data[item])
-        ) for item in balls_mask
-    ]
-    kb.add(*buttons)
-    return kb
+            callback_data=BallsCallbackFactory(color=data[item]).pack()
+        )
+    return builder.adjust(3).as_markup()

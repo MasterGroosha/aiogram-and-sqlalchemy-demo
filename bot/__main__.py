@@ -1,64 +1,37 @@
 import asyncio
-import logging
 
 from aiogram import Bot, Dispatcher
-from aiogram.types import BotCommand
-from aiogram.types.bot_command_scope import BotCommandScopeDefault
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-from sqlalchemy.orm import sessionmaker
+from aiogram.utils.callback_answer import CallbackAnswerMiddleware
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
-from bot.config_loader import Config, load_config
-from bot.db.base import Base
-from bot.handlers.commands import register_commands
-from bot.handlers.callbacks import register_callbacks
-from bot.updatesworker import get_handled_updates_list
-
-
-async def set_bot_commands(bot: Bot):
-    commands = [
-        BotCommand(command="play", description="Start a new game (your current score will reset)"),
-        BotCommand(command="top", description="View top-5 players scoreboard")
-    ]
-    await bot.set_my_commands(commands, scope=BotCommandScopeDefault())
+from bot.config_reader import config
+from bot.handlers import commands, callbacks
+from bot.middlewares import DbSessionMiddleware
+from bot.ui_commands import set_ui_commands
 
 
 async def main():
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
-    )
+    engine = create_async_engine(url=config.db_url, echo=True)
+    sessionmaker = async_sessionmaker(engine, expire_on_commit=False)
 
-    config: Config = load_config()
-    engine = create_async_engine(
-        f"postgresql+asyncpg://{config.db.user}:{config.db.password}@{config.db.host}/{config.db.db_name}",
-        future=True
-    )
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+    bot = Bot(config.bot_token.get_secret_value(), parse_mode="HTML")
 
-    # expire_on_commit=False will prevent attributes from being expired
-    # after commit.
-    async_sessionmaker = sessionmaker(
-        engine, expire_on_commit=False, class_=AsyncSession
-    )
-    bot = Bot(config.bot.token, parse_mode="HTML")
-    bot["db"] = async_sessionmaker
-    dp = Dispatcher(bot)
+    # Setup dispatcher and bind routers to it
+    dp = Dispatcher()
+    dp.update.middleware(DbSessionMiddleware(session_pool=sessionmaker))
+    # Automatically reply to all callbacks
+    dp.callback_query.middleware(CallbackAnswerMiddleware())
 
-    register_commands(dp)
-    register_callbacks(dp)
+    # Register handlers
+    dp.include_router(commands.router)
+    dp.include_router(callbacks.router)
 
-    await set_bot_commands(bot)
+    # Set bot commands in UI
+    await set_ui_commands(bot)
 
-    try:
-        await dp.start_polling(allowed_updates=get_handled_updates_list(dp))
-    finally:
-        await dp.storage.close()
-        await dp.storage.wait_closed()
-        await bot.session.close()
+    # Run bot
+    await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
 
 
-try:
+if __name__ == "__main__":
     asyncio.run(main())
-except (KeyboardInterrupt, SystemExit):
-    logging.error("Bot stopped!")
