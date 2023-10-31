@@ -29,7 +29,7 @@ services:
             PGADMIN_DEFAULT_EMAIL: ${PGADMIN_USER}
             PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
         ports:
-            - "5050:80"
+            - "127.0.0.1:5050:80"
         volumes:
             # Don't forget to set owner:group for this dir as 5050:5050
             # (sudo chown -R 5050:5050 <this path>)
